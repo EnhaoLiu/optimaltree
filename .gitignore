@@ -1,0 +1,5 @@
+.vscode
+.DS_Store
+octenv
+.ipynb_checkpoints
+*__pycache__

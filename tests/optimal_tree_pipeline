@@ -1,0 +1,12 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+graph [ranksep=equally, splines=polyline] ;
+edge [fontname=helvetica] ;
+0 [label="node #0\nwavelet_V_1 <= 118.941\ngini = 0.473\nsamples = 1276\nvalue = [490, 786]", fillcolor="#b4daf5"] ;
+1 [label="node #1\ngini = 0.0\nsamples = 9\nvalue = [9, 0]", fillcolor="#e58139"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="node #2\ngini = 0.471\nsamples = 1267\nvalue = [481, 786]", fillcolor="#b2d9f5"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+{rank=same ; 0} ;
+{rank=same ; 1; 2} ;
+}

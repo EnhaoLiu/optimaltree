@@ -1,0 +1,22 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+graph [ranksep=equally, splines=polyline] ;
+edge [fontname=helvetica] ;
+0 [label="node #0\nPetalLengthCm <= 2.329\ngini = 0.667\nsamples = 150\nvalue = [50, 50, 50]\nclass = Iris-setosa", fillcolor="#ffffff"] ;
+1 [label="node #1\ngini = 0.0\nsamples = 50\nvalue = [50, 0, 0]\nclass = Iris-setosa", fillcolor="#e58139"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="node #2\nPetalLengthCm <= 5.0\ngini = 0.5\nsamples = 100\nvalue = [0, 50, 50]\nclass = Iris-versicolor", fillcolor="#ffffff"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label="node #3\nPetalWidthCm <= 1.7\ngini = 0.198\nsamples = 54\nvalue = [0, 48, 6]\nclass = Iris-versicolor", fillcolor="#52e891"] ;
+2 -> 3 ;
+4 [label="node #4\ngini = 0.0\nsamples = 47\nvalue = [0, 47, 0]\nclass = Iris-versicolor", fillcolor="#39e581"] ;
+3 -> 4 ;
+5 [label="node #5\ngini = 0.245\nsamples = 7\nvalue = [0, 1, 6]\nclass = Iris-virginica", fillcolor="#965ae9"] ;
+3 -> 5 ;
+6 [label="node #6\ngini = 0.083\nsamples = 46\nvalue = [0, 2, 44]\nclass = Iris-virginica", fillcolor="#8742e6"] ;
+2 -> 6 ;
+{rank=same ; 0} ;
+{rank=same ; 2} ;
+{rank=same ; 3} ;
+{rank=same ; 1; 4; 5; 6} ;
+}
