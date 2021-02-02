@@ -7,7 +7,7 @@ optimal classification tree and optimal classification tree with hyperplanes
 # Authors: Enhao Liu<liu.5045@osu.edu>
 # Theodore Allen<allen.515@osu.edu>
 #
-# License: YYYYY
+# License: ZZZZZ
 
 
 import numpy as np
