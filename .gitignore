@@ -3,3 +3,7 @@
 octenv
 .ipynb_checkpoints
 *__pycache__
+data/rosen*
+optimaltree-test-program
+*.zip
+oct
