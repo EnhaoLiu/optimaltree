@@ -1,15 +1,33 @@
 # Optimal Classification Tree
 
-This is a **python** implementation for two new methods of Optimal Classification Trees proposed by Enhao Liu and Theodore Allen: (1) Modified-Optimal Classification Tree (M-OCT) and (2) BinaryNodePenalty-Optimal Classification Tree (BNP-OCT)
-
-
-The implementation of `lsopt` is compatible with `scikit-learn` machine learning mudules. See **User Guide** for more details. 
+This is the **python** implementation for two new methods of Optimal Classification Trees proposed by **Enhao Liu** and **Theodore Allen** at the Ohio State University.
+- Modified-Optimal Classification Tree (M-OCT) 
+- BinaryNodePenalty-Optimal Classification Tree (BNP-OCT)
 
 Contact: Enhao Liu (liu.5045@osu.edu), Theodre Allen (allen.515@osu.edu)
 
+## Software Required
+
+### Python Environment
+The M-OCT and BNP-OCT methods are implemented in Python 3.7.3 and the required packages are listed in `requirements.txt`. 
+
+
+### Optimization Solvers
+
+Although the methods have been implemented in the Python programming, it requires to install optimization solvers since the M-OCT and BNP-OCT are developed based on Mixed-integer Linear Programming. 
+
+Our implementations support `Gurobi`, `Cplex`, and `GLPK` solvers. We recommend to use `Gurobi` because it achieves better performance than other solvers.
+
+Please follow the `Gurobi` [website](https://www.gurobi.com/) for the latest information about how to download the software, how to set up the license based on your computer versions, and how to install the required packages for Python programming. 
+
+An example of setting up `Gurobi` for Linux system is below: 
+- Linux: https://www.gurobi.com/documentation/9.1/quickstart_linux/quickstart_linux.html
+
+
+
 ## User Guide
 
-The implementation of `lsopt` is compatible with `scikit-learn` machine learning mudules. 
+The implementation of `lsopt` is compatible with `scikit-learn` machine learning modules. 
 
 ### Example of Iris
 
