@@ -7,3 +7,5 @@ data/rosen*
 optimaltree-test-program
 *.zip
 oct
+*.png
+*_iris
