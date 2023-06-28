@@ -81,12 +81,6 @@ class OptimalTreeClassifier:
     verbose : boolean, default=False
         If True, display the outputs of the solver.
 
-    warm_start: boolean, default=False
-        If True, the CART algorithm would be used to generate a warm start solution to the MILP
-
-    log_file: str, default=None
-        Specify the log file to store the solver's logs. 
-
     solver_options : dict, default=None
         Use to specify additonal configurations in solver to improve the 
         quality of Optimal Classification Tree.
@@ -530,12 +524,6 @@ class BinNodePenaltyOptimalTreeClassifier:
 
     verbose : boolean, default=False
         If True, display the outputs of the solver.
-
-    warm_start: boolean, default=False
-        If True, the CART algorithm would be used to generate a warm start solution to the MILP
-
-    log_file: str, default=None
-        Specify the log file to store the solver's logs. 
 
     solver_options : dict, default=None
         Use to specify additonal configurations in solver to improve the 
@@ -983,12 +971,6 @@ class OldOptimalTreeClassifier:
     verbose : boolean, default=False
         If True, display the outputs of the solver.
 
-    warm_start: boolean, default=False
-        If True, the CART algorithm would be used to generate a warm start solution to the MILP
-
-    log_file: str, default=None
-        Specify the log file to store the solver's logs. 
-
     solver_options : dict, default=None
         Use to specify additonal configurations in solver to improve the 
         quality of Optimal Classification Tree.
@@ -1187,6 +1169,7 @@ class OldOptimalTreeClassifier:
                  max_depth=2,
                  min_samples_leaf=1,
                  alpha=0.01,
+                 epsilon_option=1,
                  criterion="gini",
                  solver="gurobi",
                  time_limit=5,
@@ -1198,6 +1181,7 @@ class OldOptimalTreeClassifier:
         self.max_depth = max_depth
         self.min_samples_leaf = min_samples_leaf
         self.alpha = alpha
+        self.epsilon_option = epsilon_option
         self.criterion = criterion
         self.solver = solver
         self.time_limit = time_limit
@@ -1272,6 +1256,7 @@ class OldOptimalTreeClassifier:
                                                                  y_transformed=y_transformed,
                                                                  L_hat=L_hat,
                                                                  epsilons=epsilons,
+                                                                 epsilon_option=self.epsilon_option,
                                                                  alpha=self.alpha,
                                                                  max_depth=self.max_depth,
                                                                  min_samples_leaf=self.min_samples_leaf,
