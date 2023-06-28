@@ -3241,6 +3241,7 @@ def solve_oct_MILP_BIN(X_transformed, y_transformed, feature_thresholds, L_hat, 
 
 
 def solve_oct_MILP_OLD(X_transformed, y_transformed, L_hat, epsilons,
+                       epsilon_option=1,
                        alpha=0.01, max_depth=2, min_samples_leaf=1,
                        solver="gurobi", verbose=False, log_file=None, **kwargs):
     """(Older Version ) Bersitmas and Dunn's OCT 
@@ -3485,14 +3486,14 @@ def solve_oct_MILP_OLD(X_transformed, y_transformed, L_hat, epsilons,
 
     temp_small_number = 0.00001
 
-    if epsilon_min < temp_small_number:
-        epsilon_min = temp_small_number
+    # if epsilon_min < temp_small_number:
+    #     epsilon_min = temp_small_number
 
-    if epsilon_max < temp_small_number:
-        epsilon_max = 1.5 * temp_small_number
+    # if epsilon_max < temp_small_number:
+    #     epsilon_max = 1.5 * temp_small_number
 
-    if epsilon_min == epsilon_max:
-        epsilon_max = 1.5 * epsilon_min
+    # if epsilon_min == epsilon_max:
+    #     epsilon_max = 1.5 * epsilon_min
 
     epsilons_dict = dict(enumerate(epsilons.flatten(), 1))
 
@@ -3659,12 +3660,17 @@ def solve_oct_MILP_OLD(X_transformed, y_transformed, L_hat, epsilons,
     def split_left_cons(model, i, t, m):
         # i in model.I, t and m in model.tL_AL pair which represent (leaf node, left ancestor node)
         # left hand side
+        if epsilon_option == 1:
+            lhs = sum((model.X[i, j] + model.epsilons[j])*model.a[j, m]
+                      for j in model.J)
 
-        lhs = sum(model.X[i, j]*model.a[j, m]
-                  for j in model.J) + model.epsilon_min
+        elif epsilon_option == 2:
+            lhs = sum(model.X[i, j]*model.a[j, m]
+                      for j in model.J) + model.epsilon_min
 
-        # lhs = sum((model.X[i, j] + model.epsilons[j])*model.a[j, m]
-        #           for j in model.J)
+        elif epsilon_option == 3:
+            lhs = sum(model.X[i, j]*model.a[j, m]
+                      for j in model.J) + temp_small_number
 
         # right hand side
         rhs = model.b[m] + (1-model.z[i, t])*(1 + model.epsilon_max)
