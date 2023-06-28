@@ -6,7 +6,9 @@ import numpy as np
 from tqdm import tqdm
 
 from ._base import _get_baseloss, render_plot_tree
+import pyomo.environ as pyo
 from .tree import OptimalTreeClassifier
+from .tree import OldOptimalTreeClassifier
 from .tree import BinNodePenaltyOptimalTreeClassifier
 from sklearn import tree
 from sklearn.model_selection import train_test_split
@@ -151,7 +153,13 @@ def evaluate_tree_model(model, X_train, y_train, X_test, y_test, set_idx, file_n
 
     y_pred_train = model.predict(X=X_train)
     mis_counts_train = sum(y_pred_train != y_train)
+    # Re-calculate objective value
     obj_value = mis_counts_train/L_hat + alpha * n_branch_nodes
+    # Solver objective value
+    if model_method == 'DecisionTreeClassifier':
+        obj_value_solver = obj_value
+    else:
+        obj_value_solver = pyo.value(model.tree_.model.Obj)
 
     eval_accuracy_train = accuracy_score(y_true=y_train, y_pred=y_pred_train)
     eval_f1_train = f1_score(y_true=y_train, y_pred=y_pred_train, average=avg)
@@ -177,6 +185,7 @@ def evaluate_tree_model(model, X_train, y_train, X_test, y_test, set_idx, file_n
         'min_samples_leaf': [min_samples_leaf],
         'n_branch_nodes': [n_branch_nodes],
         'obj_value': [obj_value],
+        'obj_value_solver': [obj_value_solver],
         'mis_counts_train': [mis_counts_train],
         'mis_counts_test': [mis_counts_test],
         'accuracy_train': [eval_accuracy_train],
@@ -351,6 +360,115 @@ def run_experiments_OCT(file_name, file_path, log_path,
     else:
         df_file_name = file_name + \
             "_eval_oct_df_maxdepth_{}.csv".format(max_depth)
+
+    # Save the evaluation dataframe
+    df_file_path = log_path + '/' + df_file_name
+    eval_df_all.to_csv(df_file_path, index=False)
+
+    return eval_df_all
+
+# %%
+
+
+def run_experiments_OldOCT(file_name, file_path, log_path,
+                           max_depth,
+                           min_samples_leaf,
+                           alpha,
+                           epsilon_option,
+                           time_limit,
+                           mip_gap_tol,
+                           mip_polish_time,
+                           solver='gurobi',
+                           mip_focus='balance',
+                           verbose=False,
+                           warm_start=False,
+                           train_test_set=[0, 1, 2, 3, 4]
+                           ):
+
+    eval_df_all = pd.DataFrame()
+    # Loop through train & test set: 0, 1, 2, 3, 4
+    filename_default = f"old_oct_epsilon_option_{epsilon_option}"
+    methodname_default = f"Epsilon Strategy {epsilon_option}"
+
+    for train_test_set_idx in tqdm(train_test_set):
+        # load train & testing data
+        df_train, df_test = load_train_val_df(file_name=file_name,
+                                              file_path=file_path,
+                                              set_idx=train_test_set_idx,
+                                              verbose=False
+                                              )
+        X_train, y_train = get_X_y(df_train)
+        X_test, y_test = get_X_y(df_test)
+
+        feature_names = df_train.columns.values[:-1]
+        class_names = np.unique(y_train)
+        class_names = list(class_names.astype(int).astype(str))
+
+        # OCT parameters
+        if warm_start:
+            log_file = log_path + '/' + file_name + \
+                '_train_{}'.format(train_test_set_idx) + \
+                f'_{filename_default}_warmstart_logs_maxdepth_{max_depth}.txt'
+        else:
+            log_file = log_path + '/' + file_name + \
+                '_train_{}'.format(train_test_set_idx) + \
+                f'_{filename_default}_logs_maxdepth_{max_depth}.txt'
+
+        # Construct OCT classifier
+        model = OldOptimalTreeClassifier(max_depth=max_depth,
+                                         min_samples_leaf=min_samples_leaf,
+                                         alpha=alpha,
+                                         epsilon_option=epsilon_option,
+                                         criterion="gini",
+                                         solver=solver,
+                                         time_limit=time_limit,
+                                         verbose=verbose,
+                                         warm_start=warm_start,
+                                         log_file=log_file,
+                                         solver_options={'mip_cuts': 'auto',
+                                                         'mip_gap_tol': mip_gap_tol,
+                                                         'mip_focus': mip_focus,
+                                                         'mip_polish_time': mip_polish_time
+                                                         }
+                                         )
+
+        # Fit on training data
+        model.fit(X_train, y_train)
+
+        # # Plot tree: Render & Save the constructed tree
+        # plot_file_name = file_name + \
+        #     '_train_{}'.format(train_test_set_idx) + '_oct_plot'
+        # render_plot_tree(model=model,
+        #                  feature_names=feature_names,
+        #                  class_names=class_names,
+        #                  file_name=plot_file_name,
+        #                  file_path=log_path
+        #                  )
+
+        # Evaluation dataframe
+        eval_df = evaluate_tree_model(model=model,
+                                      X_train=X_train,
+                                      y_train=y_train,
+                                      X_test=X_test,
+                                      y_test=y_test,
+                                      set_idx=train_test_set_idx,
+                                      file_name=file_name,
+                                      alpha=alpha
+                                      )
+        eval_df_all = pd.concat([eval_df_all, eval_df], ignore_index=True)
+
+    if warm_start:
+        eval_df_all['model_method'] = eval_df_all['model_method'] + \
+            ' with Warm Start' + f" ({methodname_default})"
+
+        df_file_name = file_name + \
+            f"_eval_{filename_default}_warmstart_df_maxdepth_{max_depth}.csv"
+    else:
+        eval_df_all['model_method'] = eval_df_all['model_method'] + \
+            f" ({methodname_default})"
+
+        df_file_name = file_name + \
+            f"_eval_{filename_default}_df_maxdepth_{max_depth}.csv"
 
     # Save the evaluation dataframe
     df_file_path = log_path + '/' + df_file_name
