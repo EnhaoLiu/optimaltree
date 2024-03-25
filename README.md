@@ -1,10 +1,11 @@
 # Optimal Classification Tree
 
-This is the **python** implementation for two new methods of Optimal Classification Trees proposed by **Enhao Liu** and **Theodore Allen** at the Ohio State University.
+This is the **python** implementation for two new methods of Optimal Classification Trees proposed by **Enhao Liu**, **Theodore Allen**, and **Tengmu Hu** at the Ohio State University.
+
 - Modified-Optimal Classification Tree (M-OCT) 
 - BinaryNodePenalty-Optimal Classification Tree (BNP-OCT)
 
-Contact: Enhao Liu (liu.5045@osu.edu), Theodre Allen (allen.515@osu.edu)
+Contact: Enhao Liu (liu.5045@osu.edu), Theodre Allen (allen.515@osu.edu), Tengmu Hu (hu.713@osu.edu)
 
 ## Software Required
 
